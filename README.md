@@ -73,7 +73,7 @@ turbines, so a fault on $i$ cannot leak into its own reference.
 **1. Wind direction.** The circular mean of the other turbines' nacelle positions, each corrected by its static
 offset $c_j$ relative to the others (learned in the baseline year):
 
-$$\theta_{-i}(t) = \operatorname{circmean}_{j \ne i}\big(N_j(t) - c_j\big)$$
+$$\theta_{-i}(t) = \mathrm{circmean}_{j \ne i}\big(N_j(t) - c_j\big)$$
 
 **2. Wakes.** For every ordered pair of turbines the rotor-averaged deficit $d_{ji}(\theta, U; k)$ that $j$ alone
 causes at $i$ is precomputed with PyWake (Bastankhah & Porté-Agel Gaussian wake, generic 92 m / 2.05 MW thrust
@@ -90,7 +90,7 @@ baseline year (grid search, criterion: day-to-day noise of the power residual).
 ($d_j < 2\,\%$) and in normal operation give the free-stream wind, as a median of their *power-equivalent* wind
 speeds (their own small wake deficit undone):
 
-$$E_{-i}(t) = \operatorname*{median}_{j \in \mathcal{F}_{-i}(t)} \frac{\tilde e_j(t)}{1 - d_j(t)}, \qquad
+$$E_{-i}(t) = \mathrm{median}_{j \in \mathcal{F}_{-i}(t)} \frac{\tilde e_j(t)}{1 - d_j(t)}, \qquad
 \tilde e_j = \begin{cases} F^{-1}(P_j) & \text{partial load} \\ \kappa_j\, u_j & \text{otherwise} \end{cases}$$
 
 $\kappa_j$ scales an anemometer to the power-equivalent scale (baseline year); it is only needed above
@@ -124,8 +124,8 @@ correlation of the weather).
 |---|---|---|---|
 | `power` | $\ln(\sum P_i / \sum \hat P_i)$ | $100\ \mathrm{kW} \le \hat P_i < 97\,\%$ of rated | power loss in partial load |
 | `rated` | $\ln(\sum P_i / \sum \hat P_i)$ | $\hat P_i \ge 97\,\%$ of rated | derating (power cap) |
-| `anemo` | $\operatorname{median} \ln(u_i / \hat u_i)$, $\ \hat u_i = E^P_{-i}(1-d_i)\, s^u_i$ | $\hat u_i$ 4-11 m/s | anemometer bias or drift |
-| `yaw` | $\operatorname{median} \Delta_i$, $\ \Delta_i = N_i - c_i - \theta_{-i}$ | free stream $\ge$ 4 m/s | static yaw misalignment |
+| `anemo` | $\mathrm{median}\, \ln(u_i / \hat u_i)$, $\ \hat u_i = E^P_{-i}(1-d_i)\, s^u_i$ | $\hat u_i$ 4-11 m/s | anemometer bias or drift |
+| `yaw` | $\mathrm{median}\, \Delta_i$, $\ \Delta_i = N_i - c_i - \theta_{-i}$ | free stream $\ge$ 4 m/s | static yaw misalignment |
 
 The anemometer check compares the turbine's anemometer with the wind speed implied by the *neighbours' power*
 through the inverted power curve, carried to turbine $i$ through the wake model; $s^u_i$ is the anemometer's own
@@ -150,8 +150,8 @@ $$E\big[P_i/\hat P_i \mid \Delta\big] = \tfrac{A}{2} + \tfrac{A}{2}e^{-2s^2}\cos
 
 which is linear in $A'$, $R\cos 2\varphi$ and $R\sin 2\varphi$: the peak $\varphi$ is estimated without bias by
 linear least squares, the noise only flattens the curve. The static misalignment is
-$\bar\gamma = \operatorname{median}\Delta - \varphi$, its energy cost $1 - \cos^2\bar\gamma$, with a 5-95 % interval
-from a bootstrap over days. The `yaw` chart watches the fast, precise part (a shift of $\operatorname{median}\Delta$);
+$\bar\gamma = \mathrm{median}\,\Delta - \varphi$, its energy cost $1 - \cos^2\bar\gamma$, with a 5-95 % interval
+from a bootstrap over days. The `yaw` chart watches the fast, precise part (a shift of $\mathrm{median}\,\Delta$);
 the cos² fit tells whether a shift moved the turbine away from its power optimum (real misalignment) or whether
 the optimum moved with it (a nacelle position sensor offset).
 
@@ -262,7 +262,7 @@ one year, so an annual change under about 1 % is not yet a finding. Two turbines
 
 ![yaw tracker](docs/img/yaw_tracker.png)
 
-Static misalignment $\bar\gamma = \operatorname{median}\Delta - \varphi$ from the cos² fit, with its 5-95 %
+Static misalignment $\bar\gamma = \mathrm{median}\,\Delta - \varphi$ from the cos² fit, with its 5-95 %
 bootstrap interval, and the shift of the nacelle offset in 2021:
 
 | | T1 | T2 | T3 | T4 | T5 | T6 |
