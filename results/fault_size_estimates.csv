@@ -1,0 +1,7 @@
+fault,injected,estimate_median,estimate_p10,estimate_p90,cos2_fit_median,cos2_fit_p10,cos2_fit_p90
+anemometer +/-3 %,3.000,2.984,1.510,4.285,,,
+anemometer +/-6 %,6.000,6.066,4.480,7.346,,,
+derating 5 %,5.000,3.866,3.457,4.440,,,
+power loss 3 %,3.000,3.257,1.665,5.605,,,
+yaw 4 deg,4.000,4.025,3.258,4.698,2.861,1.635,4.105
+yaw 8 deg,8.000,8.025,7.258,8.698,5.613,3.298,8.124

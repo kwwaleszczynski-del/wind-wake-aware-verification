@@ -1,0 +1,42 @@
+{
+  "years": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021
+  ],
+  "baseline_year": 2017,
+  "calibration_year": 2018,
+  "test_years": [
+    2019,
+    2020
+  ],
+  "apply_year": 2021,
+  "wake_parameters": {
+    "k_ref": 0.035,
+    "sigma_deg": 3.0,
+    "theta0": 2.0,
+    "k_slope": 0.0,
+    "free_deficit": 0.02
+  },
+  "daily_noise_pct_mean": {
+    "power": 5.64,
+    "rated": 1.48,
+    "anemo": 2.48,
+    "yaw": 1.73,
+    "nb": 6.37,
+    "curve": 1.88,
+    "power_nowake": 8.64,
+    "rated_nowake": 1.33,
+    "anemo_nowake": 3.28
+  },
+  "injection_runs": 288,
+  "clean_false_alarms_per_turbine_year": {
+    "WARP": 0.999,
+    "WARP without wake model": 0.666,
+    "neighbour index": 0.167,
+    "own power curve": 0.0
+  },
+  "runtime_s": 899
+}

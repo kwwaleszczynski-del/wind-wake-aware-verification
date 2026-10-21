@@ -1,0 +1,55 @@
+fault,detector,detection_rate,detected_within_30d,median_days_to_detect,runs,false_alarms_per_turbine_year
+anemometer +/-3 %,anemo,0.812,0.354,34.000,48,0.250
+anemometer +/-3 %,anemo_nowake,0.812,0.312,37.000,48,0.167
+anemometer +/-3 %,curve,0.500,0.500,3.000,48,0.000
+anemometer +/-3 %,nb,0.042,0.000,65.500,48,0.167
+anemometer +/-3 %,power,0.021,0.000,85.000,48,0.083
+anemometer +/-3 %,power_nowake,0.000,0.000,,48,0.000
+anemometer +/-3 %,rated,0.042,0.000,61.500,48,0.167
+anemometer +/-3 %,rated_nowake,0.000,0.000,,48,0.000
+anemometer +/-3 %,yaw,0.104,0.062,21.000,48,0.500
+anemometer +/-6 %,anemo,1.000,0.896,13.000,48,0.250
+anemometer +/-6 %,anemo_nowake,1.000,0.917,14.500,48,0.167
+anemometer +/-6 %,curve,0.500,0.500,1.000,48,0.000
+anemometer +/-6 %,nb,0.042,0.000,65.500,48,0.167
+anemometer +/-6 %,power,0.021,0.000,85.000,48,0.083
+anemometer +/-6 %,power_nowake,0.000,0.000,,48,0.000
+anemometer +/-6 %,rated,0.042,0.000,61.500,48,0.167
+anemometer +/-6 %,rated_nowake,0.000,0.000,,48,0.000
+anemometer +/-6 %,yaw,0.104,0.062,21.000,48,0.500
+derating 5 %,anemo,0.062,0.062,15.000,48,0.250
+derating 5 %,anemo_nowake,0.042,0.000,64.500,48,0.167
+derating 5 %,curve,0.000,0.000,,48,0.000
+derating 5 %,nb,0.042,0.000,65.500,48,0.167
+derating 5 %,power,0.083,0.021,75.500,48,0.083
+derating 5 %,power_nowake,0.000,0.000,,48,0.000
+derating 5 %,rated,0.938,0.417,35.000,48,0.167
+derating 5 %,rated_nowake,0.792,0.208,48.500,48,0.000
+derating 5 %,yaw,0.104,0.062,21.000,48,0.500
+power loss 3 %,anemo,0.062,0.062,15.000,48,0.250
+power loss 3 %,anemo_nowake,0.042,0.000,64.500,48,0.167
+power loss 3 %,curve,0.958,0.688,16.500,48,0.000
+power loss 3 %,nb,0.312,0.042,57.000,48,0.167
+power loss 3 %,power,0.500,0.167,43.000,48,0.083
+power loss 3 %,power_nowake,0.021,0.000,71.000,48,0.000
+power loss 3 %,rated,0.896,0.250,47.000,48,0.167
+power loss 3 %,rated_nowake,0.750,0.104,51.500,48,0.000
+power loss 3 %,yaw,0.104,0.062,21.000,48,0.500
+yaw 4 deg,anemo,0.062,0.062,15.000,48,0.250
+yaw 4 deg,anemo_nowake,0.042,0.000,64.500,48,0.167
+yaw 4 deg,curve,0.062,0.042,17.000,48,0.000
+yaw 4 deg,nb,0.104,0.021,68.000,48,0.167
+yaw 4 deg,power,0.167,0.021,50.000,48,0.083
+yaw 4 deg,power_nowake,0.000,0.000,,48,0.000
+yaw 4 deg,rated,0.062,0.000,34.000,48,0.167
+yaw 4 deg,rated_nowake,0.000,0.000,,48,0.000
+yaw 4 deg,yaw,1.000,0.979,6.000,48,0.500
+yaw 8 deg,anemo,0.062,0.062,15.000,48,0.250
+yaw 8 deg,anemo_nowake,0.042,0.000,64.500,48,0.167
+yaw 8 deg,curve,0.771,0.375,35.000,48,0.000
+yaw 8 deg,nb,0.167,0.042,48.500,48,0.167
+yaw 8 deg,power,0.333,0.146,43.500,48,0.083
+yaw 8 deg,power_nowake,0.000,0.000,,48,0.000
+yaw 8 deg,rated,0.062,0.000,34.000,48,0.167
+yaw 8 deg,rated_nowake,0.000,0.000,,48,0.000
+yaw 8 deg,yaw,1.000,1.000,2.000,48,0.500

@@ -1,0 +1,7 @@
+fault,detected,correctly_diagnosed
+anemometer +/-3 %,0.833,0.771
+anemometer +/-6 %,1.000,0.958
+derating 5 %,0.938,0.812
+power loss 3 %,0.938,0.812
+yaw 4 deg,1.000,0.979
+yaw 8 deg,1.000,1.000
