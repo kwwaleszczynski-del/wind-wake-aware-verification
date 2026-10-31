@@ -60,7 +60,7 @@ def wake_validation(farm, ref, model, rows, path: Path, bin_deg: float = 3.0):
         ax.plot(wake.index, wake.values, color=MUTED, lw=1.0, label="wake model alone")
         ax.set_title(f"T{farm.turbines[i]}  (hub {farm.hub_height[i]:.1f} m)", loc="left")
         ax.set_xticks(range(0, 361, 90))
-        ax.set_ylim(0.55, 1.12)
+        ax.set_ylim(0.55, 1.2)  # T4's highest bins reach above 1.1
     for ax in axes[1]:
         ax.set_xlabel("wind direction [deg]")
     for ax in axes[:, 0]:
@@ -121,19 +121,20 @@ def example_runs(examples: list[dict], path: Path):
     """Daily statistic and its CUSUM alarm for a few injections (one panel each)."""
     _style()
     fig, axes = plt.subplots(len(examples), 1, figsize=(10, 2.3 * len(examples)))
+    box = {"boxstyle": "round,pad=0.15", "fc": SURFACE, "ec": "none", "alpha": 0.9}  # labels stay readable on data
     for ax, ex in zip(np.atleast_1d(axes), examples):
         dates, x = ex["dates"], ex["values"]
         ax.axvspan(ex["start"], ex["end"], color=SERIES[1], alpha=0.10, lw=0)
         ax.plot(dates, x, color=SERIES[0], lw=1.2, marker="o", ms=2.5)
         ax.axhline(ex["mu"], color=MUTED, lw=1)
         ax.annotate("calibration-year median", (dates[-1], ex["mu"]), xytext=(0, 3), textcoords="offset points",
-                    fontsize=7, color=MUTED, ha="right")
+                    fontsize=7, color=MUTED, ha="right", bbox=box, zorder=5)
         if ex.get("alarm") is not None:
             ax.axvline(ex["alarm"], color=CRITICAL, lw=1.2)
             ax.annotate(f"alarm after {ex['days']:.0f} d", (ex["alarm"], 1), xycoords=("data", "axes fraction"),
-                        xytext=(4, -12), textcoords="offset points", fontsize=8, color=INK2)
+                        xytext=(4, -12), textcoords="offset points", fontsize=8, color=INK2, bbox=box, zorder=5)
         ax.annotate(ex["fault"], (ex["start"], 0), xycoords=("data", "axes fraction"), xytext=(4, 4),
-                    textcoords="offset points", fontsize=8, color=INK2)
+                    textcoords="offset points", fontsize=8, color=INK2, bbox=box, zorder=5)
         ax.set_title(ex["title"], loc="left")
         ax.set_ylabel(ex["ylabel"])
         ax.xaxis.set_major_locator(mdates.MonthLocator())
@@ -171,8 +172,15 @@ def yaw_tracker(monthly_delta: pd.DataFrame, fit: dict, path: Path):
     x = monthly_delta.index.to_timestamp()
     for k, t in enumerate(monthly_delta.columns):
         a1.plot(x, monthly_delta[t], color=SERIES[k % len(SERIES)], lw=1.6, label=f"T{t}")
-        a1.annotate(f"T{t}", (x[-1], monthly_delta[t].iloc[-1]), xytext=(4, 0), textcoords="offset points",
-                    va="center", fontsize=8, color=INK2)
+    # end labels pushed apart where two lines end close together (T3 and T6 in 2021)
+    ends = monthly_delta.iloc[-1].sort_values()
+    span = float(np.nanmax(monthly_delta.to_numpy()) - np.nanmin(monthly_delta.to_numpy()))
+    gap, pos = 0.07 * span, {}
+    for t, v in ends.items():
+        pos[t] = v if not pos else max(v, max(pos.values()) + gap)
+    for t in ends.index:
+        a1.annotate(f"T{t}", (x[-1], pos[t]), xytext=(4, 0), textcoords="offset points", va="center", fontsize=8,
+                    color=INK2)
     a1.axhline(0, color=AXIS, lw=1)
     a1.set_ylabel("nacelle − neighbours' direction, Δ [deg]")
     a1.set_title("Monthly median nacelle offset (baseline 2017 = 0)", loc="left")
