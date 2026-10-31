@@ -35,6 +35,12 @@ chart of the method alarms within 90 days.
 anemometer from a bad turbine. ² summed over WARP's four charts; half of it is the yaw chart reacting to real
 1.5-2° shifts of nacelle orientation in the data (see below).
 
+The 100 % yaw detection is partly by construction: the injected fault shifts the nacelle position, the very
+signal the yaw chart watches, so the result shows how far a 4° or 8° step stands out of the chart's day-to-day
+noise (1.7° on average), not that a real vane fault would produce such a clean step. The same chart also alarms
+on a mere nacelle position (north) offset; the cos² fit is what tells the two apart, and it recovers only part
+of the injected misalignment (2.9° of 4°, see [Static yaw misalignment](#static-yaw-misalignment)).
+
 - **The wake model is what makes a free-stream reference work.** It reproduces where and how deep every wake at
   Kelmarsh is (chart below). Without it, the same reference is 50 % noisier day to day (8.6 % vs 5.6 %) and
   catches 75-79 % instead of 94 % of power losses and deratings. With it, the partial-load power residual is
@@ -64,30 +70,30 @@ site factor (terrain, hub height, performance offset).*
 
 ## The method: WARP (Wake-Adjusted Reference Power)
 
-Notation: turbine $i$, 10-minute record $t$, power $P$, nacelle wind speed $u$ (mean of the two nacelle
-anemometers, normalised to 1.225 kg/m³), nacelle position $N$. $F$ is the farm power curve (bin means of all
-turbines in normal operation, baseline year) and $F^{-1}$ its inverse, used only in partial load (50-1850 kW)
-where power still responds to the wind. Everything on the right-hand side for turbine $i$ comes from the *other*
-turbines, so a fault on $i$ cannot leak into its own reference.
+Notation: turbine $`i`$, 10-minute record $`t`$, power $`P`$, nacelle wind speed $`u`$ (mean of the two nacelle
+anemometers, normalised to 1.225 kg/m³), nacelle position $`N`$. $`F`$ is the farm power curve (bin means of all
+turbines in normal operation, baseline year) and $`F^{-1}`$ its inverse, used only in partial load (50-1850 kW)
+where power still responds to the wind. Everything on the right-hand side for turbine $`i`$ comes from the *other*
+turbines, so a fault on $`i`$ cannot leak into its own reference.
 
 **1. Wind direction.** The circular mean of the other turbines' nacelle positions, each corrected by its static
-offset $c_j$ relative to the others (learned in the baseline year):
+offset $`c_j`$ relative to the others (learned in the baseline year):
 
 ```math
 \theta_{-i}(t) = \mathrm{circmean}_{j \ne i}\big(N_j(t) - c_j\big)
 ```
 
-**2. Wakes.** For every ordered pair of turbines the rotor-averaged deficit $d_{ji}(\theta, U; k)$ that $j$ alone
-causes at $i$ is precomputed with PyWake (Bastankhah & Porté-Agel Gaussian wake, generic 92 m / 2.05 MW thrust
-curve, 1° x 0.5 m/s grid) and smoothed over direction with a Gaussian of width $\sigma_\theta$ (10-minute mean
+**2. Wakes.** For every ordered pair of turbines the rotor-averaged deficit $`d_{ji}(\theta, U; k)`$ that $`j`$ alone
+causes at $`i`$ is precomputed with PyWake (Bastankhah & Porté-Agel Gaussian wake, generic 92 m / 2.05 MW thrust
+curve, 1° x 0.5 m/s grid) and smoothed over direction with a Gaussian of width $`\sigma_\theta`$ (10-minute mean
 directions are uncertain by a few degrees and wakes meander). Only running turbines cast a wake
-($o_j = 1$), and single wakes add up by root-sum-square:
+($`o_j = 1`$), and single wakes add up by root-sum-square:
 
 ```math
 d_i(t) = \sqrt{\sum_{j \ne i} o_j(t)\; d_{ji}\big(\theta_{-i}(t) + \theta_0,\; U(t);\; k\big)^2}
 ```
 
-$k$ (wake expansion), $\sigma_\theta$ and $\theta_0$ (a farm-wide north correction) are calibrated on the
+$`k`$ (wake expansion), $`\sigma_\theta`$ and $`\theta_0`$ (a farm-wide north correction) are calibrated on the
 baseline year (grid search, criterion: day-to-day noise of the power residual).
 
 **3. Free stream from unwaked turbines.** For the current direction, the turbines that are free
@@ -99,8 +105,8 @@ E_{-i}(t) = \mathrm{median}_{j \in \mathcal{F}_{-i}(t)} \frac{\tilde e_j(t)}{1 -
 \tilde e_j = \begin{cases} F^{-1}(P_j) & \text{partial load} \\ \kappa_j\, u_j & \text{otherwise} \end{cases}
 ```
 
-$\kappa_j$ scales an anemometer to the power-equivalent scale (baseline year); it is only needed above
-partial load. $E^P_{-i}$ is the same median using power only (all free turbines in partial load): it is the
+$`\kappa_j`$ scales an anemometer to the power-equivalent scale (baseline year); it is only needed above
+partial load. $`E^P_{-i}`$ is the same median using power only (all free turbines in partial load): it is the
 anemometer-independent reference for the anemometer check.
 
 **4. Expected power.**
@@ -114,9 +120,9 @@ anemometer-independent reference for the anemometer check.
 + g \ln\frac{TI_{-i}}{0.12}
 ```
 
-$s_i$ is a smooth site-and-transfer factor per turbine (terrain speed-up, the turbine's own small performance
+$`s_i`$ is a smooth site-and-transfer factor per turbine (terrain speed-up, the turbine's own small performance
 offset and, through the turbulence term, stability-driven shear: two turbines have 10 m lower hubs). It is
-fitted by robust least squares in log wind speed on the baseline year; $b_0$ is then adjusted so that the
+fitted by robust least squares in log wind speed on the baseline year; $`b_0`$ is then adjusted so that the
 expected baseline energy equals the actual one (the power curve is convex, so a median-unbiased wind speed is not
 energy-unbiased). Six harmonics resolve about 30°, too coarse to imitate a wake (10-15° wide here): the sharp
 direction structure is left to the wake model, the factor only absorbs what varies slowly with direction.
@@ -134,39 +140,39 @@ correlation of the weather).
 
 | Chart | Daily statistic | Records | Fault it targets |
 |---|---|---|---|
-| `power` | $\ln(\sum P_i / \sum \hat P_i)$ | $`100\ \mathrm{kW} \le \hat P_i < 97\,\%`$ of rated | power loss in partial load |
-| `rated` | $\ln(\sum P_i / \sum \hat P_i)$ | $`\hat P_i \ge 97\,\%`$ of rated | derating (power cap) |
-| `anemo` | $`\mathrm{median}\, \ln(u_i / \hat u_i)`$, $`\ \hat u_i = E^P_{-i}(1-d_i)\, s^u_i`$ | $\hat u_i$ 4-11 m/s | anemometer bias or drift |
-| `yaw` | $`\mathrm{median}\, \Delta_i`$, $\ \Delta_i = N_i - c_i - \theta_{-i}$ | free stream $\ge$ 4 m/s | static yaw misalignment |
+| `power` | $`\ln(\sum P_i / \sum \hat P_i)`$ | $`100\ \mathrm{kW} \le \hat P_i < 97\,\%`$ of rated | power loss in partial load |
+| `rated` | $`\ln(\sum P_i / \sum \hat P_i)`$ | $`\hat P_i \ge 97\,\%`$ of rated | derating (power cap) |
+| `anemo` | $`\mathrm{median}\, \ln(u_i / \hat u_i)`$, $`\ \hat u_i = E^P_{-i}(1-d_i)\, s^u_i`$ | $`\hat u_i`$ 4-11 m/s | anemometer bias or drift |
+| `yaw` | $`\mathrm{median}\, \Delta_i`$, $`\ \Delta_i = N_i - c_i - \theta_{-i}`$ | free stream $`\ge`$ 4 m/s | static yaw misalignment |
 
 The anemometer check compares the turbine's anemometer with the wind speed implied by the *neighbours' power*
-through the inverted power curve, carried to turbine $i$ through the wake model; $s^u_i$ is the anemometer's own
-site-and-transfer factor, of the same form as $s_i$.
+through the inverted power curve, carried to turbine $`i`$ through the wake model; $`s^u_i`$ is the anemometer's own
+site-and-transfer factor, of the same form as $`s_i`$.
 
-CUSUM on the standardised daily value $z_d = (x_d - \mu)/\sigma$ ($\mu$, $\sigma$: median and robust spread in the
+CUSUM on the standardised daily value $`z_d = (x_d - \mu)/\sigma`$ ($`\mu`$, $`\sigma`$: median and robust spread in the
 calibration year):
 
 ```math
 S^{-}_d = \max\big(0,\ S^{-}_{d-1} - z_d - k\big), \qquad S^{+}_d = \max\big(0,\ S^{+}_{d-1} + z_d - k\big)
 ```
 
-with an alarm when $S > h$ (then the chart restarts). Each chart is tuned to the smallest fault it should catch,
-$k = \delta_{\mathrm{target}} / (2\sigma)$ with $\delta_{\mathrm{target}}$ = 3 % (power, rated, anemo) or 3° (yaw).
-$h$ is the highest value any turbine's chart reached on the fault-free calibration year, at least 5. Days with
+with an alarm when $`S > h`$ (then the chart restarts). Each chart is tuned to the smallest fault it should catch,
+$`k = \delta_{\mathrm{target}} / (2\sigma)`$ with $`\delta_{\mathrm{target}}`$ = 3 % (power, rated, anemo) or 3° (yaw).
+$`h`$ is the highest value any turbine's chart reached on the fault-free calibration year, at least 5. Days with
 fewer than 6 hours of valid data (1 hour for `rated`) leave the chart unchanged.
 
 **7. Yaw misalignment: the cos^n model.** The power ratio follows the inflow angle,
-$P_i/\hat P_i = A \cos^n(\gamma)$, and $\gamma = \Delta_i - \varphi_i$, where $\varphi_i$ is the nacelle orientation
-(relative to the neighbours) at which the turbine produces most. $\Delta_i$ is a noisy proxy of the inflow angle;
-for $n = 2$ and Gaussian noise of variance $s^2$ in $\Delta$, $\cos^2 x = (1 + \cos 2x)/2$ gives exactly
+$`P_i/\hat P_i = A \cos^n(\gamma)`$, and $`\gamma = \Delta_i - \varphi_i`$, where $`\varphi_i`$ is the nacelle orientation
+(relative to the neighbours) at which the turbine produces most. $`\Delta_i`$ is a noisy proxy of the inflow angle;
+for $`n = 2`$ and Gaussian noise of variance $`s^2`$ in $`\Delta`$, $`\cos^2 x = (1 + \cos 2x)/2`$ gives exactly
 
 ```math
 E\big[P_i/\hat P_i \mid \Delta\big] = \tfrac{A}{2} + \tfrac{A}{2}e^{-2s^2}\cos 2(\Delta - \varphi) = A' + R\cos 2(\Delta - \varphi),
 ```
 
-which is linear in $A'$, $R\cos 2\varphi$ and $R\sin 2\varphi$: the peak $\varphi$ is estimated without bias by
+which is linear in $`A'`$, $`R\cos 2\varphi`$ and $`R\sin 2\varphi`$: the peak $`\varphi`$ is estimated without bias by
 linear least squares, the noise only flattens the curve. The static misalignment is
-$`\bar\gamma = \mathrm{median}\,\Delta - \varphi`$, its energy cost $1 - \cos^2\bar\gamma$, with a 5-95 % interval
+$`\bar\gamma = \mathrm{median}\,\Delta - \varphi`$, its energy cost $`1 - \cos^2\bar\gamma`$, with a 5-95 % interval
 from a bootstrap over days. The `yaw` chart watches the fast, precise part (a shift of $`\mathrm{median}\,\Delta`$);
 the cos² fit tells whether a shift moved the turbine away from its power optimum (real misalignment) or whether
 the optimum moved with it (a nacelle position sensor offset).
@@ -189,7 +195,7 @@ the other turbines only, so they are unaffected by the injection.
 
 | Fault | What changes in the faulty turbine's records |
 |---|---|
-| yaw misalignment δ | nacelle position shifted by δ (the vane is offset, so the controller keeps the rotor δ off the wind); power scaled as if the inflow angle were vane + δ, through an effective wind speed $`u\,[\cos(v+\delta)/\cos v]^{n/3}`$ with $n = 2$, so a misaligned turbine still reaches rated power in strong wind |
+| yaw misalignment δ | nacelle position shifted by δ (the vane is offset, so the controller keeps the rotor δ off the wind); power scaled as if the inflow angle were vane + δ, through an effective wind speed $`u\,[\cos(v+\delta)/\cos v]^{n/3}`$ with $`n = 2`$, so a misaligned turbine still reaches rated power in strong wind |
 | anemometer bias b | both nacelle anemometers x (1 + b); power unchanged |
 | derating | power capped at 95 % of rated |
 | power loss | power x 0.97 at all wind speeds |
@@ -296,6 +302,17 @@ With a real vane fault the optimum stays put and the misalignment grows by the f
 injections simulate, and there the fit recovers 2.9° (1.6-4.1°) of 4° and 5.6° (3.3-8.1°) of 8°: it confirms the
 direction of a change but underestimates its size, because the noisy neighbours' direction flattens the cos²
 curve.
+
+**Not the same numbers as in wind-power-curve-kelmarsh.** That project fits the same cos² curve against the
+turbine's own nacelle vane instead of its nacelle position relative to the neighbours, with the neighbour power
+relation instead of WARP as the power reference, and its headline is the vane reading of maximum power pooled
+over 2016-2021 (T1 -6.1°, T3 +1.2°). The sign convention is the same (the vane reads wind direction minus
+nacelle position), and its `misalignment_deg` (vane offset minus the median vane reading, per year) is the
+quantity comparable with the table above. For 2017 the two methods agree on T3 (+4.9° there, +4.1° here) and T6
+(+0.6°, +0.2°), and disagree on T5 (-1.8°, 0.0°) and T1 (-5.4°, +2.4°), where the vane fit is poorly determined
+(5-95 %: -24.7° to -2.9°). Neither is an absolute measurement: the vane sits behind the rotor, the neighbours
+stand 300-700 m away. Only the estimate here was checked with injected faults. A misalignment that only one of
+the two methods finds is a reason for a spinner-anemometer or lidar check, not for a vane correction.
 
 ## 2021: the charts on unmodified data
 
